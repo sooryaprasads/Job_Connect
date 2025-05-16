@@ -198,3 +198,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 📬 Contact
 
 Project Link: [https://github.com/sooryaprasads/Job_Connect](https://github.com/sooryaprasads/Job_Connect)
+Demo Link: [https://job-connect-one.vercel.app/](https://job-connect-one.vercel.app/)
