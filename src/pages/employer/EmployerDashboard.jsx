@@ -163,21 +163,6 @@ const EmployerDashboard = () => {
               </div>
             </div>
           </Link>
-
-          <Link
-            to="/employer/resume-alerts"
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow flex items-center justify-between"
-          >
-            <div className="flex items-center">
-              <div className="p-3 bg-green-100 rounded-lg">
-                <Building className="h-6 w-6 text-green-600" />
-              </div>
-              <div className="ml-4">
-                <h3 className="font-medium text-gray-900">Manage Resume Alerts</h3>
-                <p className="text-sm text-gray-500">Set up alerts for matching candidates</p>
-              </div>
-            </div>
-          </Link>
         </div>
       </div>
     </DashboardLayout>

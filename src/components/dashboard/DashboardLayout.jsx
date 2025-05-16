@@ -54,14 +54,9 @@ const DashboardLayout = ({ children }) => {
       href: "/employer/shortlisted-resumes",
     },
     {
-      name: "Shortlisted Candidates",
+      name: "Shortlisted Candidates", 
       icon: Users,
       href: "/employer/shortlisted-candidates",
-    },
-    {
-      name: "Resume Alerts",
-      icon: Bell,
-      href: "/employer/resume-alerts",
     },
     {
       name: "Change Password",

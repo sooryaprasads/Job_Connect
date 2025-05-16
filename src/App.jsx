@@ -28,7 +28,6 @@ import PostJob from "./pages/employer/PostJob"
 import ManageJobs from "./pages/employer/ManageJobs"
 import Applications from "./pages/employer/Applications"
 import ShortlistedCandidates from "./pages/employer/ShortlistedCandidates"
-import ResumeAlerts from "./pages/employer/ResumeAlerts"
 import ShortlistedResumes from "./pages/employer/ShortlistedResumes"
 
 // Common Components
@@ -210,38 +209,7 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-                <Route
-                  path="/employer/resume-alerts"
-                  element={
-                    <ProtectedRoute allowedRoles={["employer"]}>
-                      <ResumeAlerts />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/employer/resume-alerts/new"
-                  element={
-                    <ProtectedRoute allowedRoles={["employer"]}>
-                      <ResumeAlerts isCreating={true} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/employer/resume-alerts/:id/edit"
-                  element={
-                    <ProtectedRoute allowedRoles={["employer"]}>
-                      <ResumeAlerts isEditing={true} />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/employer/resume-alerts/:id/matches"
-                  element={
-                    <ProtectedRoute allowedRoles={["employer"]}>
-                      <ResumeAlerts showMatches={true} />
-                    </ProtectedRoute>
-                  }
-                />
+
                 <Route
                   path="/employer/change-password"
                   element={

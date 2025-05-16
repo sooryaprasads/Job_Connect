@@ -8,7 +8,6 @@ JobConnect is a job portal and applicant tracking system built with React and Vi
 - Post and manage job listings
 - Review job applications
 - Track shortlisted candidates
-- Set up resume alerts
 - Company profile management
 - View application statistics
 

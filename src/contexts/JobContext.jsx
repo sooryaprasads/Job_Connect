@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState } from "react";
-import { jobs as mockJobs, applications as mockApplications, resumeAlerts as mockResumeAlerts } from "../data/mockData";
+import { jobs as mockJobs, applications as mockApplications } from "../data/mockData";
 
 const JobContext = createContext();
 
@@ -18,9 +18,7 @@ export function JobProvider({ children }) {
     console.log('Initial mockApplications:', mockApplications);
     return mockApplications || [];
   });
-  const [resumeAlerts, setResumeAlerts] = useState(() => {
-    return mockResumeAlerts || [];
-  });
+
 
   const getJobs = () => jobs;
 
@@ -93,36 +91,55 @@ export function JobProvider({ children }) {
     return Promise.resolve();
   };
 
-  const getResumeAlertsByEmployer = (employerId) => {
-    return resumeAlerts.filter(alert => alert.employerId === employerId);
-  };
+  const getShortlistedCandidates = ({ timeFilter, sortBy, page, status }) => {
+    // Filter applications by status
+    let shortlisted = applications.filter(app => app.status === 'shortlisted');
 
-  const addResumeAlert = (newAlert) => {
-    const alertWithId = {
-      ...newAlert,
-      id: `alert${resumeAlerts.length + 1}`,
-      createdAt: new Date().toISOString(),
-    };
-    setResumeAlerts([...resumeAlerts, alertWithId]);
-    return Promise.resolve(alertWithId);
-  };
+    // Apply time filter
+    if (timeFilter !== 'all') {
+      const now = new Date();
+      const filterDate = new Date();
+      switch (timeFilter) {
+        case 'today':
+          filterDate.setHours(0, 0, 0, 0);
+          break;
+        case 'week':
+          filterDate.setDate(now.getDate() - 7);
+          break;
+        case 'month':
+          filterDate.setMonth(now.getMonth() - 1);
+          break;
+      }
+      shortlisted = shortlisted.filter(app => new Date(app.shortlistedAt) >= filterDate);
+    }
 
-  const updateResumeAlert = (id, updatedAlert) => {
-    setResumeAlerts(prevAlerts => 
-      prevAlerts.map(alert => alert.id === id ? { ...alert, ...updatedAlert } : alert)
-    );
-    return Promise.resolve();
-  };
+    // Apply sorting
+    shortlisted.sort((a, b) => {
+      switch (sortBy) {
+        case 'date':
+          return new Date(b.shortlistedAt) - new Date(a.shortlistedAt);
+        case 'name':
+          return a.candidate.name.localeCompare(b.candidate.name);
+        case 'relevance':
+          return b.matchScore - a.matchScore;
+        default:
+          return 0;
+      }
+    });
 
-  const deleteResumeAlert = (id) => {
-    setResumeAlerts(prevAlerts => prevAlerts.filter(alert => alert.id !== id));
-    return Promise.resolve();
+    // Calculate pagination
+    const startIndex = (page - 1) * 10;
+    const paginatedResults = shortlisted.slice(startIndex, startIndex + 10);
+
+    return Promise.resolve({
+      candidates: paginatedResults,
+      total: shortlisted.length
+    });
   };
 
   const value = {
     jobs,
     applications,
-    resumeAlerts,
     getJobs,
     getJobById,
     getJobsByEmployer,
@@ -135,10 +152,7 @@ export function JobProvider({ children }) {
     updateApplicationStatus,
     applyToJob,
     withdrawApplication,
-    getResumeAlertsByEmployer,
-    addResumeAlert,
-    updateResumeAlert,
-    deleteResumeAlert,
+    getShortlistedCandidates
   };
 
   return (

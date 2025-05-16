@@ -17,15 +17,26 @@ const ShortlistedCandidates = () => {
   useEffect(() => {
     loadCandidates()
   }, [timeFilter, sortBy, currentPage])
-
   const loadCandidates = async () => {
     setIsLoading(true)
     try {
-      const response = await getShortlistedCandidates({ timeFilter, sortBy, page: currentPage })
-      setCandidates(response.candidates)
-      setTotalPages(Math.ceil(response.total / candidatesPerPage))
+      const response = await getShortlistedCandidates({ 
+        timeFilter, 
+        sortBy, 
+        page: currentPage,
+        status: "shortlisted"
+      })
+      if (response && response.candidates) {
+        setCandidates(response.candidates)
+        setTotalPages(Math.ceil(response.total / candidatesPerPage))
+      } else {
+        setCandidates([])
+        setTotalPages(1)
+      }
     } catch (error) {
       console.error("Failed to load shortlisted candidates:", error)
+      setCandidates([])
+      setTotalPages(1)
     } finally {
       setIsLoading(false)
     }
