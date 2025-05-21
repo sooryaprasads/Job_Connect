@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import DashboardLayout from "../../components/dashboard/DashboardLayout"
 import { useJob } from "../../contexts/JobContext"
-import { Calendar, MapPin, Users, Star, CheckCircle, XCircle } from "lucide-react"
+import { Calendar, MapPin, Users, Star, Eye } from "lucide-react"
 import Pagination from "../../components/common/Pagination"
 
 const ShortlistedCandidates = () => {
-  const { getShortlistedCandidates, updateApplicationStatus } = useJob()
+  const navigate = useNavigate()
+  const { getShortlistedCandidates } = useJob()
   const [candidates, setCandidates] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [timeFilter, setTimeFilter] = useState("all")
@@ -17,6 +19,7 @@ const ShortlistedCandidates = () => {
   useEffect(() => {
     loadCandidates()
   }, [timeFilter, sortBy, currentPage])
+
   const loadCandidates = async () => {
     setIsLoading(true)
     try {
@@ -42,21 +45,16 @@ const ShortlistedCandidates = () => {
     }
   }
 
-  const handleStatusUpdate = async (applicationId, status) => {
-    try {
-      await updateApplicationStatus(applicationId, status)
-      await loadCandidates()
-    } catch (error) {
-      console.error("Failed to update application status:", error)
-    }
-  }
-
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString(undefined, {
       year: "numeric",
       month: "long",
       day: "numeric"
     })
+  }
+
+  const handleReviewClick = (applicationId) => {
+    navigate(`/employer/review/${applicationId}`)
   }
 
   return (
@@ -91,7 +89,6 @@ const ShortlistedCandidates = () => {
               >
                 <option value="date">Sort by Date</option>
                 <option value="name">Sort by Name</option>
-                <option value="relevance">Sort by Relevance</option>
               </select>
             </div>
           </div>
@@ -139,22 +136,13 @@ const ShortlistedCandidates = () => {
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center space-x-4">
-                          <button
-                            onClick={() => handleStatusUpdate(candidate.applicationId, "accepted")}
-                            className="flex items-center px-3 py-1 text-sm text-green-600 hover:bg-green-50 rounded-md"
-                          >
-                            <CheckCircle className="h-4 w-4 mr-1" />
-                            Approve
-                          </button>
-                          <button
-                            onClick={() => handleStatusUpdate(candidate.applicationId, "rejected")}
-                            className="flex items-center px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded-md"
-                          >
-                            <XCircle className="h-4 w-4 mr-1" />
-                            Reject
-                          </button>
-                        </div>
+                        <button
+                          onClick={() => handleReviewClick(candidate.applicationId)}
+                          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          Review Applicant
+                        </button>
                       </div>
 
                       <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-gray-500">
@@ -168,18 +156,20 @@ const ShortlistedCandidates = () => {
                         </span>
                       </div>
 
-                      <div className="mt-4">
-                        <div className="flex flex-wrap gap-2">
-                          {candidate.skills.map((skill, index) => (
-                            <span
-                              key={index}
-                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                            >
-                              {skill}
-                            </span>
-                          ))}
+                      {candidate.skills && Array.isArray(candidate.skills) && (
+                        <div className="mt-4">
+                          <div className="flex flex-wrap gap-2">
+                            {candidate.skills.map((skill, index) => (
+                              <span
+                                key={index}
+                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 ))}
